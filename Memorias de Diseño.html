@@ -6,13 +6,22 @@
         <title>Partiendo la séptima clase</title>
         <style>
             * { margin: 0; padding: 0;}
-            :root{
-                --background:lightyellow;
-                --foreground: purple /*#03122E*/; 
-                --acento:red /*#0D47A1*/;
-                --borde: blue /*#eee*/;
-                --claro: pink /*#FAFAFA*/;
+
+            [data-theme="light"] {
+                --background:#eceff1;
+                --foreground: hsl(200, 100%, 10%) /*#03122E*/; 
+                --acento:hsl(344 70% 52%) /*#0D47A1*/;
+                --borde: darkblue;
+                --claro: hsl(309 57% 70%);   
             }
+           [data-theme="dark"] {
+                --background:#263238;
+                --foreground: hsl(200, 100%, 100%); 
+                --acento:hsl(344 70% 52%);
+                --borde: lightblue;
+                --claro: hsl(299 63% 22%) ;   
+            }
+
             body { color: var(--foreground); background: var(--background);text-align: center; font-family: Helvetica, Arial, sans-serif; }
             
             em { font-style: normal; font-weight: bold; }
@@ -46,6 +55,17 @@
             td:nth-child(3){ width:35%; }
             
             th:nth-child(5), td:nth-child(5){ text-align: center; }
+
+            @keyframes parpadea{
+                0%{opacity:0.5; color:var(--acento);}
+                100%{opacity:1;}
+            }
+            table td span{
+                font-weight:bold;
+                font-size: 120%;
+                animation: parpadea .2s infinite alternate;
+            }
+
             
             article p{ line-height: 1.5; margin-bottom:0.5rem; }
             
@@ -157,16 +177,22 @@
                 });
                 
                 //Trabajando con la selección, ya organizada por nombre_guia, para crear una tabla 
-                seleccion.forEach((s, i) => {
+                seleccion.forEach((s, i) =>  {
+                    if(s.nota_titulo !=7) {
+                        tabla.innerHTML += `<tr><td>${s.nombre_proyecto}</td><td>${s.nombre_guia}</td><td><a href="https://diseno.uc.cl/memorias/pdf/${s.nombre_pdf}" class="link-dark">${s.nombre_completo} <svg width="1em" height="1em"><use href="#pdf"></use></svg></a></td><td>${s.year}</td><td class="text-center">${s.nota_titulo.toFixed(1)}</td></tr>`;
+                    }
+                    else {
+                        tabla.innerHTML += `<tr><td>${s.nombre_proyecto}</td><td>${s.nombre_guia}</td><td><a href="https://diseno.uc.cl/memorias/pdf/${s.nombre_pdf}" class="link-dark">${s.nombre_completo} <svg width="1em" height="1em"><use href="#pdf"></use></svg></a></td><td>${s.year}</td><td class="text-center"></span/>${s.nota_titulo.toFixed(1)}</span/></td></tr>`;
+                    }
+                    
 
-                    //filas dentro de las tabla hasta 207 aprox
-                    tabla.innerHTML += `<tr><td>${s.nombre_proyecto}</td><td>${s.nombre_guia}</td><td><a href="https://diseno.uc.cl/memorias/pdf/${s.nombre_pdf}" class="link-dark">${s.nombre_completo} <svg width="1em" height="1em"><use href="#pdf"></use></svg></a></td><td>${s.year}</td><td class="text-center">${s.nota_titulo.toFixed(1)}</td></tr>`;
                     let obj = {};
                     obj["prof"] = `${s.nombre_guia}`;
                     obj["nota"] = `${s.nota_titulo}`;
                     profes.push(obj);
                     nombres.push(s.nombre_guia);
                 });
+
                 console.log("Lo que sigue son sólo los nombres, sin repetir:");
                 nombres = [...new Set(nombres)].sort();
                 console.log(nombres);
@@ -257,6 +283,17 @@
                 var ambitos = [];
                 datos(event.target.value).catch((error) => console.error(error));
             });
+            function invertir () {
+                var ancho = window.innerWidth;
+                var alto = window.innerHeight;
+                if (ancho < alto) {
+                    document.querySelector("html").setAttribute("data-theme", "dark");  } 
+                else { document.querySelector("html").setAttribute("data-theme", "light"); }
+            }
+            invertir();
+            window.addEventListener("resize", invertir);
+
+
         </script>
     </body>
 </html>
