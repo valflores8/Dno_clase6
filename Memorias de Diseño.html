@@ -7,11 +7,11 @@
         <style>
             * { margin: 0; padding: 0;}
             :root{
-                --background:#FEFEFE;
-                --foreground: #03122E;
-                --acento:#0D47A1;
-                --borde:#eee;
-                --claro:#FAFAFA;
+                --background:lightyellow;
+                --foreground: purple /*#03122E*/; 
+                --acento:red /*#0D47A1*/;
+                --borde: blue /*#eee*/;
+                --claro: pink /*#FAFAFA*/;
             }
             body { color: var(--foreground); background: var(--background);text-align: center; font-family: Helvetica, Arial, sans-serif; }
             
@@ -41,9 +41,9 @@
             
             th, td{ padding:0.2rem; }
             
-            td:nth-child(1){ width:30%; }
+            td:nth-child(1){ width:35%; }
             
-            td:nth-child(3){ width:40%; }
+            td:nth-child(3){ width:35%; }
             
             th:nth-child(5), td:nth-child(5){ text-align: center; }
             
@@ -51,7 +51,7 @@
             
             p > span{ border:1px solid var(--acento); padding-right:0.2rem; font-size:88%; color:var(--acento); margin-right:0.2rem }
             
-            span.badge{ background:var(--acento); color:white; padding:0 0.2rem; font-weight: bold; }
+            span.badge{ background:var(--acento); color:var(--background); padding:0 0.2rem; font-weight: bold; }
             
             footer{ font-size: 78%; margin:1rem .4rem; color:#999;}
         </style>
@@ -95,10 +95,10 @@
                     <table>
                         <thead>
                             <tr>
-                                <th>Autor(a)</th>
-                                <th>Año</th>
                                 <th>Título</th>
                                 <th>Prof. Guía</th>
+                                <th>Autor(a)</th>
+                                <th>Año</th>
                                 <th>Nota</th>
                             </tr>
                         </thead>
@@ -147,10 +147,10 @@
                 console.log(seleccion);
 
                 seleccion.sort(function (a, b) {
-                  if (a.nombre_guia < b.nombre_guia) {
+                  if (a.nombre_completo < b.nombre_completo) {
                     return -1;
                   }
-                  if (a.nombre_guia > b.nombre_guia) {
+                  if (a.nombre_completo > b.nombre_completo) {
                     return 1;
                   }
                   return 0;
@@ -158,7 +158,9 @@
                 
                 //Trabajando con la selección, ya organizada por nombre_guia, para crear una tabla 
                 seleccion.forEach((s, i) => {
-                    tabla.innerHTML += `<tr><td>${s.nombre_completo}</td><td>${s.year}</td><td><a href="https://diseno.uc.cl/memorias/pdf/${s.nombre_pdf}" class="link-dark">${s.nombre_proyecto} <svg width="1em" height="1em"><use href="#pdf"></use></svg></a></td><td>${s.nombre_guia}</td><td class="text-center">${s.nota_titulo.toFixed(1)}</td></tr>`;
+
+                    //filas dentro de las tabla hasta 207 aprox
+                    tabla.innerHTML += `<tr><td>${s.nombre_proyecto}</td><td>${s.nombre_guia}</td><td><a href="https://diseno.uc.cl/memorias/pdf/${s.nombre_pdf}" class="link-dark">${s.nombre_completo} <svg width="1em" height="1em"><use href="#pdf"></use></svg></a></td><td>${s.year}</td><td class="text-center">${s.nota_titulo.toFixed(1)}</td></tr>`;
                     let obj = {};
                     obj["prof"] = `${s.nombre_guia}`;
                     obj["nota"] = `${s.nota_titulo}`;
@@ -196,8 +198,9 @@
                 let mayor = 0;
                 barras.forEach((x) => {
                     mayor = Math.max(mayor, x.promedio);
-                        visualizacion.innerHTML += `<g transform="translate(0 ${ajuste * 3})"><rect x="0" y="0" height="2" width="70" fill="#eee"></rect><rect x="0" y="0" height="2" width="${x.promedio.toFixed(1) * 10}" fill="var(--acento)"></rect><text fill="white" font-size="1.2" x="0.5" y="1.4" font-weight="bold">${x.prof}</text><text fill="white" font-size="1.2" x="${x.promedio.toFixed(1) * 10 - 2.5}" y="1.4">${x.promedio.toFixed(1)}</text></g>`;
+                        visualizacion.innerHTML += `<g transform="translate(0 ${ajuste * 3})"><rect x="0" y="0" height="2" width="70" fill="var(--claro)"></rect><rect x="0" y="0" height="2" width="${x.promedio.toFixed(1) * 10}" fill="var(--acento)"></rect><text fill="white" font-size="1.2" x="0.5" y="1.4" font-weight="bold">${x.prof}</text><text fill="white" font-size="1.2" x="${x.promedio.toFixed(1) * 10 - 2.5}" y="1.4">${x.promedio.toFixed(1)}</text></g>`;
                         ajuste++;
+                        //construcción de lass barras de notas
                 });
                 visualizacion.innerHTML += `<line x1="${mayor.toFixed(1) * 10}" y1="0" x2="${mayor.toFixed(1) * 10}" y2="${ajuste * 3}" stroke="white" stroke-width="0.1"/>`;
                 var proporcion = "0 0 70 " + ajuste * 3;
@@ -234,7 +237,7 @@
                 };
                 var total = cuentaRepeticiones(palabrasAcotadas);
                 total.forEach((x) => {
-                    if (x.count >= 3) {
+                    if (x.count >= 2) {
                         palabreo.innerHTML += `<span><span class="badge">${x.count}</span> ${x.name}</span> `;
                     }
                 });
